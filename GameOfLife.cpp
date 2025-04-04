@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <chrono>
+#include <omp.h>
 using namespace std::chrono;
 using namespace std;
 
@@ -64,14 +65,15 @@ int isAlive(int row, int column, vector<vector<bool>>& matrix){
 //Method to update the matrix between generations
 //Updates the GhostCells at the end of the method
 void updateMatrix(vector<vector<bool>>& matrix, vector<vector<bool>>& matrixCopy,  int n){
-  
-  int i, j;
-  for(i = 1; i <= n; i++){
-    for(j = 1; j <= n; j++){
+
+  #pragma omp parallel for schedule(static)
+  for(int i = 1; i <= n; i++){
+    for(int j = 1; j <= n; j++){
       matrixCopy[i][j] = isAlive(i,j,matrix);
     }
   }
   updateGhostCells(matrixCopy, n);
+
   return;
 }
 
@@ -81,7 +83,7 @@ int main() {
 
   int gridSize;
   int numGenerations;
-  cout << "Size of the grid: ";
+  cout << "Size of the gri: ";
   cin >> gridSize;
   cout << "Number of generations: ";
   cin >> numGenerations; 
