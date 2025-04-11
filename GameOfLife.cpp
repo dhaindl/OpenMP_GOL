@@ -11,8 +11,8 @@ using namespace std;
 
 /*
   Name: Daniel Haindl
-  Hw_1: Game of Life Serial
-  Date: 3/4/2025
+  Hw_1: Game of Life OpenMP
+  Date: 4/11/2025
   Compile and run using whole number inputs for
   the size of the grid and number of generations
 */
@@ -66,7 +66,7 @@ int isAlive(int row, int column, vector<vector<bool>>& matrix){
 //Updates the GhostCells at the end of the method
 void updateMatrix(vector<vector<bool>>& matrix, vector<vector<bool>>& matrixCopy,  int n){
 
-  #pragma omp parallel for schedule(static)
+  #pragma omp parallel for num_threads(8) collapse(2)
   for(int i = 1; i <= n; i++){
     for(int j = 1; j <= n; j++){
       matrixCopy[i][j] = isAlive(i,j,matrix);
@@ -83,7 +83,7 @@ int main() {
 
   int gridSize;
   int numGenerations;
-  cout << "Size of the gri: ";
+  cout << "Size of the grid: ";
   cin >> gridSize;
   cout << "Number of generations: ";
   cin >> numGenerations; 
