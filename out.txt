@@ -1,2 +1,3 @@
 Size of board:1000  Number of generations:100 Time took:15(s)
 Size of board:1000  Number of generations:100 Time took:14(s)
+Size of board:1000  Number of generations:100 Time took:8(s)

@@ -66,7 +66,7 @@ int isAlive(int row, int column, vector<vector<bool>>& matrix){
 //Updates the GhostCells at the end of the method
 void updateMatrix(vector<vector<bool>>& matrix, vector<vector<bool>>& matrixCopy,  int n){
 
-  #pragma omp parallel for num_threads(8) collapse(2)
+  #pragma omp parallel for num_threads(16) collapse(2)
   for(int i = 1; i <= n; i++){
     for(int j = 1; j <= n; j++){
       matrixCopy[i][j] = isAlive(i,j,matrix);
