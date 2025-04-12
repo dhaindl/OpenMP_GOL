@@ -13,8 +13,8 @@ using namespace std;
   Name: Daniel Haindl
   Hw_1: Game of Life OpenMP
   Date: 4/11/2025
-  Compile and run using whole number inputs for
-  the size of the grid and number of generations
+  To Compile: g++ -fopenmp GameOfLife.cpp -o GameOfLide
+  RunL .\GameOfLife.exe
 */
 
 //Method to update the ghost cells
@@ -64,9 +64,10 @@ int isAlive(int row, int column, vector<vector<bool>>& matrix){
 
 //Method to update the matrix between generations
 //Updates the GhostCells at the end of the method
-void updateMatrix(vector<vector<bool>>& matrix, vector<vector<bool>>& matrixCopy,  int n){
+void updateMatrix(vector<vector<bool>>& matrix, vector<vector<bool>>& matrixCopy,  int n, int numThreads){
 
-  #pragma omp parallel for num_threads(16) collapse(2)
+  //omp parallel, uses collapse two to multithread both for loops
+  #pragma omp parallel for num_threads(numThreads) collapse(2)
   for(int i = 1; i <= n; i++){
     for(int j = 1; j <= n; j++){
       matrixCopy[i][j] = isAlive(i,j,matrix);
@@ -83,13 +84,14 @@ int main() {
 
   int gridSize;
   int numGenerations;
+  int numThreads;
   cout << "Size of the grid: ";
   cin >> gridSize;
   cout << "Number of generations: ";
   cin >> numGenerations; 
+  cout << "Number of threads: ";
+  cin >> numThreads;
 
-
-  
 
   vector<vector<bool>> matrix(gridSize+2, vector<bool>(gridSize+2)); // Original Matrix, uses vectors for dynamic sizing
   srand(time(0)); //seeding rand with time
@@ -130,11 +132,11 @@ int main() {
   //for loop to iterate through generations
   //breaks if the board doesn't change state
   for(int i = 0; i < numGenerations; i++){
-    updateMatrix(matrix, matrixCopy, gridSize);
+    updateMatrix(matrix, matrixCopy, gridSize, numThreads);
     if(matrix == matrixCopy){
       break;
     }
-    matrix.clear(); //see if this improves performance?
+    matrix.clear(); 
     matrix = matrixCopy;
   }
 
@@ -145,7 +147,7 @@ int main() {
   ofstream myFile;
   myFile.open("out.txt", std::ios::app);
 
-  myFile << "Size of board:" + to_string(gridSize) + "  Number of generations:" + to_string(numGenerations) + " Time took:" + to_string(duration.count()) + "(s)\n"; 
+  myFile << "Number threads: " + to_string(numThreads) + " Size of board:" + to_string(gridSize) + "  Number of generations:" + to_string(numGenerations) + " Time took:" + to_string(duration.count()) + "(s)\n"; 
 
   myFile.close();
 
